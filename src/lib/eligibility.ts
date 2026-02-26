@@ -66,31 +66,38 @@ function checkTrafficViolations(profile: ApplicantProfile): EligibilityCheck {
   return {
     id: "traffic_violations",
     name: "交通違反チェック",
-    description: "過去5年間の交通違反回数を確認します（目安：5回以下）",
+    description:
+      "ガイドラインでは「素行が善良であること」が要件です。交通違反の具体的な回数基準は公式には定められていません。",
     passed,
     severity: "warning",
     message: passed
-      ? `交通違反${profile.trafficViolations}回（基準内）`
-      : `交通違反${profile.trafficViolations}回（多すぎます。過去5年で5回程度が目安です）`,
+      ? `交通違反${profile.trafficViolations}回（※5回以下は実務上の目安であり、公式基準ではありません）`
+      : `交通違反${profile.trafficViolations}回（多い場合、素行善良要件に影響する可能性があります。※5回以下は実務上の目安であり、公式基準ではありません）`,
     sourceUrl: GUIDELINE_URL,
     sourceName: "永住許可に関するガイドライン（素行善良要件）",
   };
 }
 
 function checkAnnualIncome(profile: ApplicantProfile): EligibilityCheck {
-  const allAbove300 = profile.annualIncomeHistory.every(
-    (income) => income >= 300
-  );
-  const minIncome = Math.min(...profile.annualIncomeHistory);
+  const incomeYears = profile.annualIncomeHistory.length;
+  const minIncome = incomeYears > 0 ? Math.min(...profile.annualIncomeHistory) : 0;
+  const avgIncome =
+    incomeYears > 0
+      ? Math.round(
+          profile.annualIncomeHistory.reduce((a, b) => a + b, 0) / incomeYears
+        )
+      : 0;
+
+  // 公式ガイドラインには具体的な金額基準は定められていないため、
+  // 合否判定は行わず参考情報として表示する
   return {
     id: "annual_income",
-    name: "年収チェック",
-    description: "過去5年間の年収が300万円以上であることを確認します",
-    passed: allAbove300,
-    severity: "critical",
-    message: allAbove300
-      ? `過去5年の最低年収: ${minIncome}万円（基準を満たしています）`
-      : `年収300万円未満の年があります（最低: ${minIncome}万円）。独立生計要件を満たしていません。`,
+    name: "年収（参考情報）",
+    description:
+      "ガイドラインでは「独立の生計を営むに足りる資産又は技能を有すること」と規定されています。具体的な金額基準は公式には定められていません。",
+    passed: true,
+    severity: "info",
+    message: `過去${incomeYears}年の年収: 最低${minIncome}万円 / 平均${avgIncome}万円。公式要件は「日常生活において公共の負担にならず、安定した生活が見込まれること」です（具体的な金額基準はありません）。`,
     sourceUrl: GUIDELINE_URL,
     sourceName: "永住許可に関するガイドライン（独立生計要件）",
   };
@@ -188,12 +195,13 @@ function checkConsecutiveDaysAbroad(
   return {
     id: "consecutive_days_abroad",
     name: "連続出国日数チェック",
-    description: "過去10年間の最長連続出国日数を確認します（90日未満）",
+    description:
+      "ガイドラインでは「引き続き10年以上本邦に在留していること」が要件です。具体的な出国日数の基準は公式には定められていません。",
     passed,
-    severity: "critical",
+    severity: "warning",
     message: passed
-      ? `最長連続出国${profile.maxConsecutiveDaysAbroad}日（基準内）`
-      : `最長連続出国${profile.maxConsecutiveDaysAbroad}日（90日以上は在留の継続性が認められない可能性があります）`,
+      ? `最長連続出国${profile.maxConsecutiveDaysAbroad}日（※90日未満は実務上の目安であり、公式基準ではありません）`
+      : `最長連続出国${profile.maxConsecutiveDaysAbroad}日（長期出国は「引き続き在留」の要件に影響する可能性があります。※90日は実務上の目安であり、公式基準ではありません）`,
     sourceUrl: GUIDELINE_URL,
     sourceName: "永住許可に関するガイドライン（国益適合要件・継続在留）",
   };
@@ -204,12 +212,13 @@ function checkYearlyDaysAbroad(profile: ApplicantProfile): EligibilityCheck {
   return {
     id: "yearly_days_abroad",
     name: "年間出国日数チェック",
-    description: "直近1年間の出国日数合計を確認します（100日未満）",
+    description:
+      "年間の出国日数が多い場合、「引き続き在留」の要件に影響する可能性があります。具体的な日数基準は公式には定められていません。",
     passed,
     severity: "warning",
     message: passed
-      ? `直近1年の出国${profile.totalDaysAbroadLastYear}日（基準内）`
-      : `直近1年の出国${profile.totalDaysAbroadLastYear}日（100日以上は不利になる可能性があります）`,
+      ? `直近1年の出国${profile.totalDaysAbroadLastYear}日（※100日未満は実務上の目安であり、公式基準ではありません）`
+      : `直近1年の出国${profile.totalDaysAbroadLastYear}日（出国日数が多い場合、不利になる可能性があります。※100日は実務上の目安であり、公式基準ではありません）`,
     sourceUrl: GUIDELINE_URL,
     sourceName: "永住許可に関するガイドライン（国益適合要件・継続在留）",
   };

@@ -18,11 +18,11 @@ describe("EligibilityResult - 適格性チェック結果表示", () => {
       },
       {
         id: "annual_income",
-        name: "年収チェック",
+        name: "年収（参考情報）",
         description: "年収の確認",
         passed: true,
-        severity: "critical",
-        message: "基準を満たしています",
+        severity: "info",
+        message: "参考情報として表示",
       },
     ],
   };
@@ -63,7 +63,7 @@ describe("EligibilityResult - 適格性チェック結果表示", () => {
   it("各チェック項目の結果を表示する", () => {
     render(<EligibilityResult result={eligibleResult} />);
     expect(screen.getAllByText("犯罪歴チェック").length).toBeGreaterThanOrEqual(1);
-    expect(screen.getAllByText("年収チェック").length).toBeGreaterThanOrEqual(1);
+    expect(screen.getAllByText("年収（参考情報）").length).toBeGreaterThanOrEqual(1);
   });
 
   it("失敗したチェック項目に警告を表示する", () => {

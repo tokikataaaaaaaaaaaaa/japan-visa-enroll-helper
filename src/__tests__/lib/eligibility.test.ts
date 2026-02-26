@@ -67,22 +67,25 @@ describe("checkEligibility - 永住許可申請の適格性チェック", () => 
     });
   });
 
-  describe("独立生計要件", () => {
-    it("年収300万円以上が5年続いている場合、通過する", () => {
+  describe("独立生計要件（参考情報）", () => {
+    it("年収情報を参考情報として表示する（公式な金額基準なし）", () => {
       const result = checkEligibility(validWorkVisaProfile);
       const incomeCheck = result.checks.find((c) => c.id === "annual_income");
       expect(incomeCheck?.passed).toBe(true);
+      expect(incomeCheck?.severity).toBe("info");
+      expect(incomeCheck?.message).toContain("具体的な金額基準はありません");
     });
 
-    it("年収300万円未満の年がある場合、失敗する", () => {
+    it("年収が低い場合でも合否判定は行わない（公式基準がないため）", () => {
       const profile: ApplicantProfile = {
         ...validWorkVisaProfile,
-        annualIncomeHistory: [250, 300, 350, 400, 450],
+        annualIncomeHistory: [150, 200, 180, 210, 190],
       };
       const result = checkEligibility(profile);
       const incomeCheck = result.checks.find((c) => c.id === "annual_income");
-      expect(incomeCheck?.passed).toBe(false);
-      expect(incomeCheck?.severity).toBe("critical");
+      expect(incomeCheck?.passed).toBe(true);
+      expect(incomeCheck?.severity).toBe("info");
+      expect(incomeCheck?.message).toContain("最低150万円");
     });
   });
 
@@ -188,7 +191,7 @@ describe("checkEligibility - 永住許可申請の適格性チェック", () => 
       expect(abroadCheck?.passed).toBe(true);
     });
 
-    it("連続出国90日以上の場合、失敗する", () => {
+    it("連続出国90日以上の場合、警告を出す（実務上の目安）", () => {
       const profile: ApplicantProfile = {
         ...validWorkVisaProfile,
         maxConsecutiveDaysAbroad: 100,
@@ -198,7 +201,7 @@ describe("checkEligibility - 永住許可申請の適格性チェック", () => 
         (c) => c.id === "consecutive_days_abroad"
       );
       expect(abroadCheck?.passed).toBe(false);
-      expect(abroadCheck?.severity).toBe("critical");
+      expect(abroadCheck?.severity).toBe("warning");
     });
 
     it("年間出国100日以上の場合、失敗する", () => {
