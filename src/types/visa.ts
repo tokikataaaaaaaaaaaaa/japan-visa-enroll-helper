@@ -49,6 +49,10 @@ export interface RequiredDocument {
   notes?: string[];
   /** 必要な期間（年数） */
   yearsRequired?: number;
+  /** 根拠となる情報源URL */
+  sourceUrl?: string;
+  /** 情報源の名称 */
+  sourceName?: string;
 }
 
 /** 書類が必要になる条件 */
@@ -95,6 +99,10 @@ export interface EligibilityCheck {
   passed: boolean;
   severity: "critical" | "warning" | "info";
   message: string;
+  /** 根拠となる情報源URL */
+  sourceUrl?: string;
+  /** 情報源の名称 */
+  sourceName?: string;
 }
 
 /** 書類チェックリスト項目 */

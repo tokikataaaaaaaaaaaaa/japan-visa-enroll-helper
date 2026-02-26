@@ -54,6 +54,16 @@ export function EligibilityResult({ result }: EligibilityResultProps) {
               <span className="font-medium text-sm">{check.name}</span>
             </div>
             <p className="text-sm text-gray-600 ml-7">{check.message}</p>
+            {check.sourceUrl && (
+              <a
+                href={check.sourceUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-xs text-blue-500 hover:text-blue-700 underline ml-7 mt-1 inline-block"
+              >
+                {check.sourceName || "出典を確認"}
+              </a>
+            )}
           </div>
         ))}
       </div>

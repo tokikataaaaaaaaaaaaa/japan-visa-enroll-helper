@@ -128,6 +128,45 @@ export function DocumentChecklist({
           </div>
         </div>
       ))}
+
+      {/* 情報源 */}
+      <div className="bg-gray-50 border border-gray-200 rounded-lg p-4 mt-4">
+        <h4 className="font-medium text-sm text-gray-700 mb-2">
+          書類リストの情報源
+        </h4>
+        <ul className="space-y-1 text-xs text-gray-600">
+          <li>
+            <a
+              href="https://www.moj.go.jp/isa/applications/procedures/zairyu_eijyu.html"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-blue-600 hover:text-blue-800 underline"
+            >
+              出入国在留管理庁 - 永住許可申請（必要書類一覧）
+            </a>
+          </li>
+          <li>
+            <a
+              href="https://www.moj.go.jp/isa/applications/procedures/16-4.html"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-blue-600 hover:text-blue-800 underline"
+            >
+              出入国在留管理庁 - 永住許可申請の手続
+            </a>
+          </li>
+          <li>
+            <a
+              href="https://www.moj.go.jp/isa/publications/materials/nyukan_nyukan50.html"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-blue-600 hover:text-blue-800 underline"
+            >
+              出入国在留管理庁 - 永住許可に関するガイドライン
+            </a>
+          </li>
+        </ul>
+      </div>
     </div>
   );
 }

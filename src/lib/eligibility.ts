@@ -4,6 +4,16 @@ import type {
   EligibilityCheckResult,
 } from "@/types/visa";
 
+/** 出入国在留管理庁の永住許可ガイドライン */
+const GUIDELINE_URL =
+  "https://www.moj.go.jp/isa/publications/materials/nyukan_nyukan50.html";
+/** 永住許可申請の手続ページ */
+const PROCEDURE_URL =
+  "https://www.moj.go.jp/isa/applications/procedures/16-4.html";
+/** 高度専門職ポイント制度 */
+const HSP_URL =
+  "https://www.moj.go.jp/isa/publications/materials/newimmiact_3_evaluate_index.html";
+
 /**
  * 永住許可申請の適格性をチェックする
  */
@@ -46,6 +56,8 @@ function checkCriminalRecord(profile: ApplicantProfile): EligibilityCheck {
     message: passed
       ? "犯罪歴なし"
       : "犯罪歴があります。永住許可が認められない可能性が高いです。",
+    sourceUrl: GUIDELINE_URL,
+    sourceName: "永住許可に関するガイドライン（素行善良要件）",
   };
 }
 
@@ -60,6 +72,8 @@ function checkTrafficViolations(profile: ApplicantProfile): EligibilityCheck {
     message: passed
       ? `交通違反${profile.trafficViolations}回（基準内）`
       : `交通違反${profile.trafficViolations}回（多すぎます。過去5年で5回程度が目安です）`,
+    sourceUrl: GUIDELINE_URL,
+    sourceName: "永住許可に関するガイドライン（素行善良要件）",
   };
 }
 
@@ -77,6 +91,8 @@ function checkAnnualIncome(profile: ApplicantProfile): EligibilityCheck {
     message: allAbove300
       ? `過去5年の最低年収: ${minIncome}万円（基準を満たしています）`
       : `年収300万円未満の年があります（最低: ${minIncome}万円）。独立生計要件を満たしていません。`,
+    sourceUrl: GUIDELINE_URL,
+    sourceName: "永住許可に関するガイドライン（独立生計要件）",
   };
 }
 
@@ -103,6 +119,7 @@ function getRequiredYearsInJapan(profile: ApplicantProfile): number {
 function checkYearsInJapan(profile: ApplicantProfile): EligibilityCheck {
   const requiredYears = getRequiredYearsInJapan(profile);
   const passed = profile.yearsInJapan >= requiredYears;
+  const isHS = profile.currentVisaCategory === "highly_skilled";
 
   let categoryNote = "";
   if (
@@ -110,7 +127,7 @@ function checkYearsInJapan(profile: ApplicantProfile): EligibilityCheck {
     profile.currentVisaCategory === "spouse_of_permanent"
   ) {
     categoryNote = "（配偶者特例：3年以上）";
-  } else if (profile.currentVisaCategory === "highly_skilled") {
+  } else if (isHS) {
     categoryNote = `（高度専門職特例：${requiredYears}年以上）`;
   }
 
@@ -123,11 +140,14 @@ function checkYearsInJapan(profile: ApplicantProfile): EligibilityCheck {
     message: passed
       ? `在留${profile.yearsInJapan}年（必要: ${requiredYears}年以上）`
       : `在留${profile.yearsInJapan}年（必要: ${requiredYears}年以上。あと${requiredYears - profile.yearsInJapan}年必要です）`,
+    sourceUrl: isHS ? HSP_URL : GUIDELINE_URL,
+    sourceName: isHS
+      ? "高度人材ポイント制による出入国在留管理上の優遇制度"
+      : "永住許可に関するガイドライン（国益適合要件）",
   };
 }
 
 function checkYearsOnWorkVisa(profile: ApplicantProfile): EligibilityCheck {
-  // 配偶者ビザや高度専門職は就労年数要件が異なる
   const isExempt =
     profile.currentVisaCategory === "spouse_of_japanese" ||
     profile.currentVisaCategory === "spouse_of_permanent" ||
@@ -141,6 +161,8 @@ function checkYearsOnWorkVisa(profile: ApplicantProfile): EligibilityCheck {
       passed: true,
       severity: "critical",
       message: "現在のビザカテゴリでは就労年数要件は適用されません",
+      sourceUrl: GUIDELINE_URL,
+      sourceName: "永住許可に関するガイドライン（原則10年在留の特例）",
     };
   }
 
@@ -154,6 +176,8 @@ function checkYearsOnWorkVisa(profile: ApplicantProfile): EligibilityCheck {
     message: passed
       ? `就労ビザでの在留${profile.yearsOnWorkVisa}年（基準を満たしています）`
       : `就労ビザでの在留${profile.yearsOnWorkVisa}年（5年以上必要です）`,
+    sourceUrl: GUIDELINE_URL,
+    sourceName: "永住許可に関するガイドライン（国益適合要件）",
   };
 }
 
@@ -170,6 +194,8 @@ function checkConsecutiveDaysAbroad(
     message: passed
       ? `最長連続出国${profile.maxConsecutiveDaysAbroad}日（基準内）`
       : `最長連続出国${profile.maxConsecutiveDaysAbroad}日（90日以上は在留の継続性が認められない可能性があります）`,
+    sourceUrl: GUIDELINE_URL,
+    sourceName: "永住許可に関するガイドライン（国益適合要件・継続在留）",
   };
 }
 
@@ -184,6 +210,8 @@ function checkYearlyDaysAbroad(profile: ApplicantProfile): EligibilityCheck {
     message: passed
       ? `直近1年の出国${profile.totalDaysAbroadLastYear}日（基準内）`
       : `直近1年の出国${profile.totalDaysAbroadLastYear}日（100日以上は不利になる可能性があります）`,
+    sourceUrl: GUIDELINE_URL,
+    sourceName: "永住許可に関するガイドライン（国益適合要件・継続在留）",
   };
 }
 
@@ -198,5 +226,7 @@ function checkVisaPeriod(profile: ApplicantProfile): EligibilityCheck {
     message: passed
       ? `現在の在留期間: ${profile.currentVisaPeriod}年（基準を満たしています）`
       : `現在の在留期間: ${profile.currentVisaPeriod}年（3年以上の在留期間が必要です）`,
+    sourceUrl: PROCEDURE_URL,
+    sourceName: "永住許可申請の手続（出入国在留管理庁）",
   };
 }

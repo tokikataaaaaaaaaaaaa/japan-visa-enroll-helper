@@ -23,23 +23,36 @@ interface ProfileFormProps {
   onSubmit: (profile: ApplicantProfile) => void;
 }
 
+/**
+ * 数値入力用のカスタムフック
+ * 文字列状態を保持し、空欄での直接入力を可能にする
+ */
+function useNumberInput(initial: number) {
+  const [raw, setRaw] = useState(String(initial));
+  const value = raw === "" ? 0 : Number(raw);
+  const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setRaw(e.target.value);
+  };
+  return { raw, value, onChange };
+}
+
 export function ProfileForm({ onSubmit }: ProfileFormProps) {
   const [visaCategory, setVisaCategory] = useState<VisaCategory>("work");
   const [occupationType, setOccupationType] = useState<OccupationType>("employee");
-  const [yearsInJapan, setYearsInJapan] = useState(10);
-  const [yearsOnWorkVisa, setYearsOnWorkVisa] = useState(5);
-  const [income1, setIncome1] = useState(400);
-  const [income2, setIncome2] = useState(400);
-  const [income3, setIncome3] = useState(400);
-  const [income4, setIncome4] = useState(400);
-  const [income5, setIncome5] = useState(400);
+  const yearsInJapan = useNumberInput(10);
+  const yearsOnWorkVisa = useNumberInput(5);
+  const income1 = useNumberInput(400);
+  const income2 = useNumberInput(400);
+  const income3 = useNumberInput(400);
+  const income4 = useNumberInput(400);
+  const income5 = useNumberInput(400);
   const [hasSpouse, setHasSpouse] = useState(false);
-  const [dependents, setDependents] = useState(0);
-  const [hsPoints, setHsPoints] = useState(0);
-  const [violations, setViolations] = useState(0);
-  const [maxDaysAbroad, setMaxDaysAbroad] = useState(0);
-  const [yearlyDaysAbroad, setYearlyDaysAbroad] = useState(0);
-  const [visaPeriod, setVisaPeriod] = useState(3);
+  const dependents = useNumberInput(0);
+  const hsPoints = useNumberInput(0);
+  const violations = useNumberInput(0);
+  const maxDaysAbroad = useNumberInput(0);
+  const yearlyDaysAbroad = useNumberInput(0);
+  const visaPeriod = useNumberInput(3);
   const [hasCriminal, setHasCriminal] = useState(false);
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -47,20 +60,29 @@ export function ProfileForm({ onSubmit }: ProfileFormProps) {
     const profile: ApplicantProfile = {
       currentVisaCategory: visaCategory,
       occupationType,
-      yearsInJapan,
-      yearsOnWorkVisa,
-      annualIncomeHistory: [income1, income2, income3, income4, income5],
+      yearsInJapan: yearsInJapan.value,
+      yearsOnWorkVisa: yearsOnWorkVisa.value,
+      annualIncomeHistory: [
+        income1.value,
+        income2.value,
+        income3.value,
+        income4.value,
+        income5.value,
+      ],
       hasSpouseInJapan: hasSpouse,
-      numberOfDependents: dependents,
-      highlySkilledPoints: hsPoints || undefined,
-      trafficViolations: violations,
-      maxConsecutiveDaysAbroad: maxDaysAbroad,
-      totalDaysAbroadLastYear: yearlyDaysAbroad,
-      currentVisaPeriod: visaPeriod,
+      numberOfDependents: dependents.value,
+      highlySkilledPoints: hsPoints.value || undefined,
+      trafficViolations: violations.value,
+      maxConsecutiveDaysAbroad: maxDaysAbroad.value,
+      totalDaysAbroadLastYear: yearlyDaysAbroad.value,
+      currentVisaPeriod: visaPeriod.value,
       hasCriminalRecord: hasCriminal,
     };
     onSubmit(profile);
   };
+
+  const inputClass =
+    "w-full border rounded-md px-3 py-2 text-sm [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none";
 
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
@@ -111,10 +133,12 @@ export function ProfileForm({ onSubmit }: ProfileFormProps) {
           <input
             id="yearsInJapan"
             type="number"
+            inputMode="numeric"
             min={0}
-            value={yearsInJapan}
-            onChange={(e) => setYearsInJapan(Number(e.target.value))}
-            className="w-full border rounded-md px-3 py-2 text-sm"
+            value={yearsInJapan.raw}
+            onChange={yearsInJapan.onChange}
+            placeholder="例: 10"
+            className={inputClass}
           />
         </div>
 
@@ -126,10 +150,12 @@ export function ProfileForm({ onSubmit }: ProfileFormProps) {
           <input
             id="yearsOnWorkVisa"
             type="number"
+            inputMode="numeric"
             min={0}
-            value={yearsOnWorkVisa}
-            onChange={(e) => setYearsOnWorkVisa(Number(e.target.value))}
-            className="w-full border rounded-md px-3 py-2 text-sm"
+            value={yearsOnWorkVisa.raw}
+            onChange={yearsOnWorkVisa.onChange}
+            placeholder="例: 5"
+            className={inputClass}
           />
         </div>
 
@@ -141,11 +167,13 @@ export function ProfileForm({ onSubmit }: ProfileFormProps) {
           <input
             id="visaPeriod"
             type="number"
+            inputMode="numeric"
             min={1}
             max={5}
-            value={visaPeriod}
-            onChange={(e) => setVisaPeriod(Number(e.target.value))}
-            className="w-full border rounded-md px-3 py-2 text-sm"
+            value={visaPeriod.raw}
+            onChange={visaPeriod.onChange}
+            placeholder="例: 3"
+            className={inputClass}
           />
         </div>
 
@@ -157,10 +185,12 @@ export function ProfileForm({ onSubmit }: ProfileFormProps) {
           <input
             id="violations"
             type="number"
+            inputMode="numeric"
             min={0}
-            value={violations}
-            onChange={(e) => setViolations(Number(e.target.value))}
-            className="w-full border rounded-md px-3 py-2 text-sm"
+            value={violations.raw}
+            onChange={violations.onChange}
+            placeholder="例: 0"
+            className={inputClass}
           />
         </div>
 
@@ -172,10 +202,12 @@ export function ProfileForm({ onSubmit }: ProfileFormProps) {
           <input
             id="maxDaysAbroad"
             type="number"
+            inputMode="numeric"
             min={0}
-            value={maxDaysAbroad}
-            onChange={(e) => setMaxDaysAbroad(Number(e.target.value))}
-            className="w-full border rounded-md px-3 py-2 text-sm"
+            value={maxDaysAbroad.raw}
+            onChange={maxDaysAbroad.onChange}
+            placeholder="例: 30"
+            className={inputClass}
           />
         </div>
 
@@ -187,10 +219,12 @@ export function ProfileForm({ onSubmit }: ProfileFormProps) {
           <input
             id="yearlyDaysAbroad"
             type="number"
+            inputMode="numeric"
             min={0}
-            value={yearlyDaysAbroad}
-            onChange={(e) => setYearlyDaysAbroad(Number(e.target.value))}
-            className="w-full border rounded-md px-3 py-2 text-sm"
+            value={yearlyDaysAbroad.raw}
+            onChange={yearlyDaysAbroad.onChange}
+            placeholder="例: 60"
+            className={inputClass}
           />
         </div>
 
@@ -202,10 +236,12 @@ export function ProfileForm({ onSubmit }: ProfileFormProps) {
           <input
             id="dependents"
             type="number"
+            inputMode="numeric"
             min={0}
-            value={dependents}
-            onChange={(e) => setDependents(Number(e.target.value))}
-            className="w-full border rounded-md px-3 py-2 text-sm"
+            value={dependents.raw}
+            onChange={dependents.onChange}
+            placeholder="例: 0"
+            className={inputClass}
           />
         </div>
 
@@ -218,10 +254,12 @@ export function ProfileForm({ onSubmit }: ProfileFormProps) {
             <input
               id="hsPoints"
               type="number"
+              inputMode="numeric"
               min={0}
-              value={hsPoints}
-              onChange={(e) => setHsPoints(Number(e.target.value))}
-              className="w-full border rounded-md px-3 py-2 text-sm"
+              value={hsPoints.raw}
+              onChange={hsPoints.onChange}
+              placeholder="例: 80"
+              className={inputClass}
             />
           </div>
         )}
@@ -232,20 +270,22 @@ export function ProfileForm({ onSubmit }: ProfileFormProps) {
         <p className="text-sm font-medium mb-2">過去5年間の年収（万円）</p>
         <div className="grid grid-cols-5 gap-2">
           {[
-            { label: "5年前", value: income1, setter: setIncome1 },
-            { label: "4年前", value: income2, setter: setIncome2 },
-            { label: "3年前", value: income3, setter: setIncome3 },
-            { label: "2年前", value: income4, setter: setIncome4 },
-            { label: "1年前", value: income5, setter: setIncome5 },
-          ].map(({ label, value, setter }) => (
+            { label: "5年前", field: income1 },
+            { label: "4年前", field: income2 },
+            { label: "3年前", field: income3 },
+            { label: "2年前", field: income4 },
+            { label: "1年前", field: income5 },
+          ].map(({ label, field }) => (
             <div key={label}>
               <label className="block text-xs text-gray-500 mb-1">{label}</label>
               <input
                 type="number"
+                inputMode="numeric"
                 min={0}
-                value={value}
-                onChange={(e) => setter(Number(e.target.value))}
-                className="w-full border rounded-md px-2 py-1 text-sm"
+                value={field.raw}
+                onChange={field.onChange}
+                placeholder="万円"
+                className="w-full border rounded-md px-2 py-1 text-sm [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
               />
             </div>
           ))}

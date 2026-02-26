@@ -255,13 +255,122 @@ export default function HomePage() {
         )}
       </main>
 
+      {/* 参照元情報 */}
+      <section className="mt-8 bg-white rounded-xl shadow-sm border p-6">
+        <h2 className="text-lg font-bold mb-3">情報の参照元</h2>
+        <p className="text-xs text-gray-500 mb-3">
+          本アプリの要件・書類情報は以下の公式情報源に基づいています。申請前に必ず最新情報をご自身でご確認ください。
+        </p>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+          <div className="border rounded-md p-3">
+            <h3 className="text-sm font-medium">出入国在留管理庁（公式）</h3>
+            <ul className="mt-1 space-y-1 text-xs">
+              <li>
+                <a
+                  href="https://www.moj.go.jp/isa/applications/procedures/16-4.html"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-blue-600 hover:text-blue-800 underline"
+                >
+                  永住許可申請の手続
+                </a>
+              </li>
+              <li>
+                <a
+                  href="https://www.moj.go.jp/isa/applications/procedures/zairyu_eijyu.html"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-blue-600 hover:text-blue-800 underline"
+                >
+                  永住許可申請に必要な書類一覧
+                </a>
+              </li>
+              <li>
+                <a
+                  href="https://www.moj.go.jp/isa/publications/materials/nyukan_nyukan50.html"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-blue-600 hover:text-blue-800 underline"
+                >
+                  永住許可に関するガイドライン（要件の詳細）
+                </a>
+              </li>
+              <li>
+                <a
+                  href="https://www.moj.go.jp/isa/publications/materials/newimmiact_3_evaluate_index.html"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-blue-600 hover:text-blue-800 underline"
+                >
+                  高度人材ポイント制による優遇制度
+                </a>
+              </li>
+            </ul>
+          </div>
+          <div className="border rounded-md p-3">
+            <h3 className="text-sm font-medium">関連する法令・制度</h3>
+            <ul className="mt-1 space-y-1 text-xs">
+              <li>
+                <a
+                  href="https://elaws.e-gov.go.jp/document?lawid=326CO0000000319"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-blue-600 hover:text-blue-800 underline"
+                >
+                  出入国管理及び難民認定法施行規則（e-Gov法令検索）
+                </a>
+              </li>
+              <li>
+                <a
+                  href="https://www.nenkin.go.jp/n_net/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-blue-600 hover:text-blue-800 underline"
+                >
+                  ねんきんネット（年金記録の確認）
+                </a>
+              </li>
+              <li>
+                <a
+                  href="https://www.nta.go.jp/taxes/nozei/nofu/24200042/noufu_kakutei.htm"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-blue-600 hover:text-blue-800 underline"
+                >
+                  国税庁 - 納税証明書の請求
+                </a>
+              </li>
+              <li>
+                <a
+                  href="https://houmukyoku.moj.go.jp/homu/static/online_syoumei_annai.html"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-blue-600 hover:text-blue-800 underline"
+                >
+                  法務局 - 登記事項証明書のオンライン請求
+                </a>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
       {/* フッター */}
-      <footer className="text-center text-xs text-gray-400 mt-8 pb-4">
+      <footer className="text-center text-xs text-gray-400 mt-6 pb-4">
         <p>
           本アプリは情報提供を目的としたものであり、法的助言を構成するものではありません。
         </p>
         <p className="mt-1">
-          最新の要件は出入国在留管理庁の公式サイトで確認してください。
+          最新の要件は
+          <a
+            href="https://www.moj.go.jp/isa/applications/procedures/16-4.html"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-blue-500 underline"
+          >
+            出入国在留管理庁の公式サイト
+          </a>
+          で確認してください。
         </p>
       </footer>
     </div>

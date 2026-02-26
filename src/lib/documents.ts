@@ -6,6 +6,16 @@ import type {
   VisaCategory,
 } from "@/types/visa";
 
+/** 出入国在留管理庁：永住許可申請の必要書類一覧 */
+const DOC_SOURCE_URL =
+  "https://www.moj.go.jp/isa/applications/procedures/zairyu_eijyu.html";
+/** 出入国在留管理庁：永住許可申請の手続 */
+const PROCEDURE_SOURCE_URL =
+  "https://www.moj.go.jp/isa/applications/procedures/16-4.html";
+/** 高度専門職ポイント計算 */
+const HSP_SOURCE_URL =
+  "https://www.moj.go.jp/isa/publications/materials/newimmiact_3_evaluate_index.html";
+
 /** 全書類マスターデータ */
 export const ALL_DOCUMENTS: RequiredDocument[] = [
   // === 基本書類 ===
@@ -18,6 +28,8 @@ export const ALL_DOCUMENTS: RequiredDocument[] = [
     required: true,
     obtainFrom: "出入国在留管理庁ウェブサイト",
     notes: ["正確に記入し、誤字脱字がないことを確認"],
+    sourceUrl: PROCEDURE_SOURCE_URL,
+    sourceName: "永住許可申請の手続（出入国在留管理庁）",
   },
   {
     id: "photo",
